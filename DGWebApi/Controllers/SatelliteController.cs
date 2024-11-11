@@ -1,19 +1,61 @@
 ﻿using DGWebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using DGWebApi.Services.Interfaces;
-using Polly;
 
-namespace DGWebApi.Controllers
+namespace DGWebApi.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class SatelliteController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class SatelliteController : ControllerBase
+    [HttpGet]
+    public async Task<IEnumerable<Satellite>> Get(ISatelliteService satelliteService)
     {
-        [HttpGet]
-        public async Task<IEnumerable<Satellite>> Get(ISatelliteService satelliteService, IAsyncPolicy<HttpResponseMessage> asyncRetryPolicy)
+        var satellites = await satelliteService.GetSatellites();
+        return satellites;
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id, ISatelliteService satelliteService)
+    {
+        var satellite = await satelliteService.GetSingleSatellite(id);
+        if (satellite == null)
         {
-            var satellite = await satelliteService.GetSatellites();
-            return satellite;
+            return NotFound();
         }
+        return Ok(satellite);
+    }
+
+    [HttpGet("{id}/location")]
+    public async Task<IActionResult> GetLocation(int id, ISatelliteService satelliteService)
+    {
+        var satellite = await satelliteService.GetSingleSatellite(id);
+        if (satellite == null)
+        {
+            return NotFound();
+        }
+
+        var satelliteLocation = await satelliteService.GetLocation(satellite.Latitude, satellite.Longitude);
+        if (satelliteLocation == null)
+        {
+            return NotFound();
+        }
+
+        var combinedData = new SatelliteWithLocation()
+        {
+            Name = satellite.Name,
+            Id = satellite.Id,
+            Latitude = satellite.Latitude,
+            Longitude = satellite.Longitude,
+            Altitude = satellite.Altitude,
+            Velocity = satellite.Velocity,
+            TimezoneId = satelliteLocation.TimezoneId,
+            Units = satellite.Units,
+            Offset = satelliteLocation.Offset,
+            CountryCode = satelliteLocation.CountryCode,
+            MapUrl = satelliteLocation.MapUrl,
+        };
+
+        return Ok(combinedData);
     }
 }
