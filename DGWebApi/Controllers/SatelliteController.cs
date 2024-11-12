@@ -26,10 +26,11 @@ public class SatelliteController : ControllerBase
         return Ok(satellite);
     }
 
-    [HttpGet("{id}/location")]
-    public async Task<IActionResult> GetLocation(int id, ISatelliteService satelliteService)
+    [HttpGet("iss/location")]
+    public async Task<IActionResult> GetLocation(ISatelliteService satelliteService)
     {
-        var satellite = await satelliteService.GetSingleSatellite(id);
+        const int ISS = 25544;
+        var satellite = await satelliteService.GetSingleSatellite(ISS);
         if (satellite == null)
         {
             return NotFound();

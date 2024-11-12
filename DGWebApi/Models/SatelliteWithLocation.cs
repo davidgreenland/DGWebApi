@@ -26,5 +26,5 @@ public class SatelliteWithLocation
     public string? CountryCode { get; set; }
     [JsonPropertyName("map_url")]
     public string? MapUrl { get; set; }
-    public string Summary { get; set; }
+
 }

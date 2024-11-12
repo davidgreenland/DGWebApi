@@ -3,6 +3,7 @@ using DGWebApi.Services.Interfaces;
 using Polly;
 using Polly.Extensions.Http;
 using System.Net;
+using System.Text.Json;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +20,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient("issHttpClient", x => x.BaseAddress = new Uri("https://api.wheretheiss.at/v1/"));
 builder.Services.AddTransient<ISatelliteService, SatelliteService>();
+builder.Services.AddHttpClient("agifyClient", x => x.BaseAddress = new Uri("https://api.agify.io/"));
+builder.Services.AddTransient<IAgifyService, AgifyService>();
 builder.Services.AddSingleton<IAsyncPolicy<HttpResponseMessage>>(httpRetryPolicy);
+builder.Services.Configure<JsonSerializerOptions>(options =>
+{
+    options.PropertyNameCaseInsensitive = true;
+});
 
 var app = builder.Build();
 
