@@ -11,5 +11,5 @@ public class NameCount
     public string? Name { get; set; }
 
     [JsonPropertyName("age")]
-    public int Age { get; set; }
+    public int? Age { get; set; }
 }
