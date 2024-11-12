@@ -17,7 +17,7 @@ namespace DGWebApi.Controllers
 
             if (nameCount == null)
             {
-                return StatusCode(500);
+                return NotFound();
             }
             return Ok(nameCount);
         }
@@ -29,7 +29,7 @@ namespace DGWebApi.Controllers
 
             if (nameCount == null)
             {
-                return StatusCode(500);
+                return NotFound();
             }
             return Ok(nameCount);
         }
@@ -41,7 +41,7 @@ namespace DGWebApi.Controllers
 
             if (nameCount == null)
             {
-                return StatusCode(500);
+                return NotFound();
             }
 
             nameCount.CountryName = LocationUtils.GetNameFromCountryCode(countryCode);
